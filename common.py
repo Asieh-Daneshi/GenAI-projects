@@ -4,6 +4,7 @@ from dotenv import (
     find_dotenv,
 )  # to make reading ".env" files possible
 from google import genai  # calls Google's Gemini Python library
+from google.genai import types
 
 # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -14,3 +15,17 @@ from google import genai  # calls Google's Gemini Python library
 load_dotenv(find_dotenv(), override=True)
 # step 2: create the client
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+
+# :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+def ask(prompt, system=None, temperature=0.0):
+
+    response = client.models.generate_content(
+        model="gemini-3.5-flash-lite",
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            system_instruction=system,
+            temperature=temperature,
+        ),
+    )
+    return response.text
